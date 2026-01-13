@@ -18,7 +18,8 @@ export default function JobDetailsPage() {
     const fetchJob = async () => {
       try {
         setLoading(true);
-        const jobId = typeof params.id === 'string' ? parseInt(params.id) : params.id;
+        const idParam = Array.isArray(params.id) ? params.id[0] : params.id;
+        const jobId = typeof idParam === 'string' ? parseInt(idParam) : 0;
         const fetchedJob = await jobsApi.getJobById(jobId);
         setJob(fetchedJob);
       } catch (err) {
@@ -59,9 +60,14 @@ export default function JobDetailsPage() {
     );
   }
 
-  const lastDateObj = new Date(job.last_date);
+  const lastDateObj = job.last_date ? new Date(job.last_date) : null;
   const examDateObj = job.exam_date ? new Date(job.exam_date) : null;
-  const postingDateObj = new Date(job.posting_date);
+  const postingDateObj = job.posting_date ? new Date(job.posting_date) : null;
+
+  const formatDate = (date: Date | null) => {
+    if (!date || isNaN(date.getTime())) return 'N/A';
+    return format(date, 'MMM dd, yyyy');
+  };
 
   return (
     <>
@@ -143,20 +149,20 @@ export default function JobDetailsPage() {
                   <div>
                     <p className="text-sm text-gray-500">Posted</p>
                     <p className="text-lg font-semibold text-gray-900">
-                      {format(postingDateObj, 'MMM dd, yyyy')}
+                      {formatDate(postingDateObj)}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Last Date to Apply</p>
                     <p className="text-lg font-semibold text-gray-900">
-                      {format(lastDateObj, 'MMM dd, yyyy')}
+                      {formatDate(lastDateObj)}
                     </p>
                   </div>
                   {examDateObj && (
                     <div>
                       <p className="text-sm text-gray-500">Exam Date</p>
                       <p className="text-lg font-semibold text-gray-900">
-                        {format(examDateObj, 'MMM dd, yyyy')}
+                        {formatDate(examDateObj)}
                       </p>
                     </div>
                   )}

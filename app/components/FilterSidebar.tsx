@@ -99,6 +99,25 @@ export default function FilterSidebar({
         </select>
       </div>
 
+      {/* Sort By */}
+      <div className="mb-8">
+        <label className="block text-sm font-semibold mb-2">Sort By</label>
+        <select
+          value={filters.sortBy || 'recent'}
+          onChange={(e) =>
+            setFilters({ ...filters, sortBy: e.target.value as any })
+          }
+          disabled={loading}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+        >
+          <option value="recent">Most Recent</option>
+          <option value="title">Job Title</option>
+          <option value="organization">Organization</option>
+          <option value="exam_date">Exam Date</option>
+          <option value="last_date">Application Deadline</option>
+        </select>
+      </div>
+
       {/* Clear Filters */}
       <button
         onClick={() =>

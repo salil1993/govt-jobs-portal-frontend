@@ -1,17 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense, SetStateAction } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Job, JobFilters, JobsResponse } from '@/app/lib/types';
 import { jobsApi } from '@/app/lib/api';
 import Header from '@/app/components/Header';
 import JobCard from '@/app/components/JobCard';
 import FilterSidebar from '@/app/components/FilterSidebar';
 
-export default function JobsPage() {
+function JobsContent() {
+  const searchParams = useSearchParams();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState<JobFilters>({});
+  const [filters, setFilters] = useState<JobFilters>({
+    category: searchParams.get('category') || undefined,
+    organization: searchParams.get('organization') || undefined,
+    location: searchParams.get('location') || undefined,
+    searchQuery: searchParams.get('search') || undefined,
+    sortBy: (searchParams.get('sortBy') as any) || undefined,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<string[]>([]);
@@ -59,8 +67,15 @@ export default function JobsPage() {
     fetchJobs();
   }, [page, filters]);
 
-  const handleFilterChange = (newFilters: JobFilters) => {
-    setFilters(newFilters);
+  const handleFilterChange = (newFilters: SetStateAction<JobFilters>) => {
+    if (typeof newFilters === 'function') {
+      setFilters(prev => {
+        const next = newFilters(prev);
+        return next;
+      });
+    } else {
+      setFilters(newFilters);
+    }
     setPage(1);
   };
 
@@ -106,7 +121,7 @@ export default function JobsPage() {
                   <p className="text-gray-600 text-lg">No jobs found matching your filters.</p>
                   <button
                     onClick={() =>
-                      setFilters({
+                      handleFilterChange({
                         category: undefined,
                         organization: undefined,
                         location: undefined,
@@ -153,5 +168,17 @@ export default function JobsPage() {
         </div>
       </main>
     </>
+  );
+}
+
+export default function JobsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Loading jobs portal...</div>
+      </div>
+    }>
+      <JobsContent />
+    </Suspense>
   );
 }

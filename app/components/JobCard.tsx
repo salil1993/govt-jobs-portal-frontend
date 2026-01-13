@@ -9,9 +9,15 @@ interface JobCardProps {
 }
 
 export default function JobCard({ job }: JobCardProps) {
-  const lastDateObj = new Date(job.last_date);
-  const daysLeft = Math.ceil((lastDateObj.getTime() - new Date().getTime()) / (1000 * 3600 * 24));
-  const isHot = daysLeft <= 7 && daysLeft > 0;
+  const lastDateStr = job.last_date || '';
+  const lastDateObj = new Date(lastDateStr);
+  const isValidDate = !isNaN(lastDateObj.getTime());
+
+  const daysLeft = isValidDate
+    ? Math.ceil((lastDateObj.getTime() - new Date().getTime()) / (1000 * 3600 * 24))
+    : null;
+
+  const isHot = daysLeft !== null && daysLeft <= 7 && daysLeft > 0;
 
   return (
     <Link href={`/jobs/${job.id}`}>
@@ -53,7 +59,7 @@ export default function JobCard({ job }: JobCardProps) {
         <div className="pt-4 border-t border-gray-200">
           <div className="flex justify-between items-center">
             <span className="text-xs text-gray-500">
-              Last: {format(lastDateObj, 'MMM dd, yyyy')}
+              {isValidDate ? `Last: ${format(lastDateObj, 'MMM dd, yyyy')}` : 'Date: N/A'}
             </span>
             {isHot && (
               <span className="text-xs font-semibold text-red-600">

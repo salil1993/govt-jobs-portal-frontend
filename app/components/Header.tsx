@@ -16,21 +16,46 @@ export default function Header() {
           <h1 className="text-2xl font-bold text-gray-900 hidden sm:inline">Sarkari Jobs</h1>
         </Link>
 
-        <div className="flex items-center gap-6">
-          <Link 
-            href="/jobs" 
-            className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+        <div className="hidden md:flex items-center gap-6">
+          <Link
+            href="/jobs"
+            className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm"
           >
-            Browse Jobs
+            All Jobs
           </Link>
-          <a 
-            href="https://github.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-gray-700 hover:text-blue-600 transition-colors"
+          <Link
+            href="/jobs?sortBy=recent"
+            className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm"
           >
-            GitHub
-          </a>
+            Latest
+          </Link>
+          <Link
+            href="/jobs?sortBy=last_date"
+            className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm"
+          >
+            Dates
+          </Link>
+          <Link
+            href="/jobs?category=admit_card"
+            className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm"
+          >
+            Admit Cards
+          </Link>
+          <Link
+            href="/jobs?category=result"
+            className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm"
+          >
+            Results
+          </Link>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <Link
+            href="/jobs"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-bold shadow-md"
+          >
+            Browse
+          </Link>
         </div>
       </nav>
     </header>

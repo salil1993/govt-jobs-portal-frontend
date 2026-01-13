@@ -23,7 +23,7 @@ export interface JobFilters {
   location?: string;
   searchQuery?: string;
   lastDate?: string;
-  sortBy?: 'recent' | 'title' | 'organization';
+  sortBy?: 'recent' | 'title' | 'organization' | 'exam_date' | 'last_date';
 }
 
 export interface ApiResponse<T> {
